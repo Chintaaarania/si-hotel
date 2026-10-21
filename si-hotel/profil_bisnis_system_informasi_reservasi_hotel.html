@@ -1,0 +1,1487 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GrandStay RMS - Sistem Informasi Reservasi Hotel Modern</title>
+    <!-- Google Fonts: Playfair Display for headers, Plus Jakarta Sans for body text -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons for clean SVG/Icon presentation -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* CSS Color Palette: White, Beige/Cream, Dark Brown */
+        :root {
+            --bg-white: #ffffff;
+            --bg-cream: #FDFBF7;
+            --bg-cream-card: #F7F3EB;
+            --bg-cream-accent: #EFE8DA;
+            
+            --brand-brown-dark: #2C1E16;
+            --brand-brown-mid: #4A3528;
+            --brand-brown-light: #7A5C43;
+            --brand-gold-accent: #C59B63;
+            
+            --text-dark: #1F1915;
+            --text-muted: #655B53;
+            --text-light: #FAFAFA;
+
+            --border-color: #E6DDD0;
+            --shadow-subtle: 0 10px 30px rgba(44, 30, 22, 0.05);
+            --shadow-medium: 0 15px 35px rgba(44, 30, 22, 0.1);
+            --transition-smooth: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-cream);
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, .font-serif {
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* Container Standard */
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* Buttons & Dynamic Styling */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 14px 28px;
+            border-radius: 50px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            border: none;
+            outline: none;
+        }
+
+        .btn-primary {
+            background-color: var(--brand-brown-dark);
+            color: var(--bg-white);
+            box-shadow: 0 4px 15px rgba(44, 30, 22, 0.2);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--brand-brown-light);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(44, 30, 22, 0.3);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--brand-brown-dark);
+            border: 1.5px solid var(--brand-brown-dark);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--brand-brown-dark);
+            color: var(--bg-white);
+            transform: translateY(-2px);
+        }
+
+        .btn-small {
+            padding: 8px 18px;
+            font-size: 0.85rem;
+        }
+
+        /* Header / Navbar */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            background-color: rgba(253, 251, 247, 0.92);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(230, 221, 208, 0.5);
+            transition: var(--transition-smooth);
+        }
+
+        .header.scrolled {
+            padding: 5px 0;
+            box-shadow: var(--shadow-subtle);
+            background-color: var(--bg-white);
+        }
+
+        .nav-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 80px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background-color: var(--brand-brown-dark);
+            color: var(--brand-gold-accent);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .logo-text {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--brand-brown-dark);
+            letter-spacing: -0.5px;
+        }
+
+        .logo-text span {
+            color: var(--brand-gold-accent);
+            font-style: italic;
+        }
+
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            list-style: none;
+            gap: 32px;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: var(--transition-smooth);
+            position: relative;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0%;
+            height: 2px;
+            background-color: var(--brand-gold-accent);
+            transition: var(--transition-smooth);
+        }
+
+        .nav-link:hover::after, .nav-link.active::after {
+            width: 100%;
+        }
+
+        .hamburger {
+            display: none;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--brand-brown-dark);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding-top: 160px;
+            padding-bottom: 90px;
+            position: relative;
+            background: linear-gradient(135deg, var(--bg-cream) 0%, var(--bg-cream-accent) 100%);
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 50px;
+            align-items: center;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 16px;
+            background-color: rgba(197, 155, 99, 0.15);
+            border: 1px solid rgba(197, 155, 99, 0.3);
+            border-radius: 30px;
+            color: var(--brand-brown-mid);
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .hero-title {
+            font-size: 3.2rem;
+            line-height: 1.15;
+            color: var(--brand-brown-dark);
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .hero-title span {
+            color: var(--brand-gold-accent);
+            font-style: italic;
+        }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            margin-bottom: 35px;
+            max-width: 520px;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 30px;
+            padding-top: 25px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .stat-item h4 {
+            font-size: 1.8rem;
+            color: var(--brand-brown-dark);
+            font-weight: 700;
+        }
+
+        .stat-item p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* Hero Image Showcase Card */
+        .hero-visual {
+            position: relative;
+        }
+
+        .main-card {
+            background-color: var(--bg-white);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--shadow-medium);
+            border: 1px solid var(--border-color);
+            position: relative;
+            z-index: 2;
+        }
+
+        .card-header-mock {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .dots {
+            display: flex;
+            gap: 6px;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #E0E0E0;
+        }
+        .dot:nth-child(1) { background-color: #FF5F56; }
+        .dot:nth-child(2) { background-color: #FFBD2E; }
+        .dot:nth-child(3) { background-color: #27C93F; }
+
+        .mock-title {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .booking-widget-demo {
+            background-color: var(--bg-cream-card);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .demo-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .demo-input {
+            background: var(--bg-white);
+            border: 1px solid var(--border-color);
+            padding: 10px 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+        }
+
+        .demo-input label {
+            display: block;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+
+        .demo-input span {
+            color: var(--brand-brown-dark);
+            font-weight: 600;
+        }
+
+        .badge-floating {
+            position: absolute;
+            background: var(--brand-brown-dark);
+            color: var(--bg-white);
+            padding: 12px 20px;
+            border-radius: 14px;
+            box-shadow: var(--shadow-medium);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 3;
+        }
+
+        .badge-floating.top-right {
+            top: -20px;
+            right: -20px;
+        }
+
+        .badge-floating.bottom-left {
+            bottom: -20px;
+            left: -20px;
+            background: var(--bg-white);
+            color: var(--brand-brown-dark);
+            border: 1px solid var(--border-color);
+        }
+
+        .badge-icon {
+            width: 36px;
+            height: 36px;
+            background: rgba(197, 155, 99, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--brand-gold-accent);
+        }
+
+        /* Services Section */
+        .services {
+            padding: 100px 0;
+            background-color: var(--bg-white);
+        }
+
+        .section-header {
+            text-align: center;
+            max-width: 650px;
+            margin: 0 auto 60px auto;
+        }
+
+        .section-tag {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--brand-gold-accent);
+            font-weight: 700;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            color: var(--brand-brown-dark);
+            margin-bottom: 15px;
+        }
+
+        .section-description {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+
+        .service-card {
+            background-color: var(--bg-cream);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 40px 30px;
+            transition: var(--transition-smooth);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .service-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-medium);
+            background-color: var(--bg-white);
+            border-color: var(--brand-gold-accent);
+        }
+
+        .service-icon-wrapper {
+            width: 65px;
+            height: 65px;
+            background-color: var(--bg-cream-accent);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            color: var(--brand-brown-dark);
+            margin-bottom: 25px;
+            transition: var(--transition-smooth);
+        }
+
+        .service-card:hover .service-icon-wrapper {
+            background-color: var(--brand-brown-dark);
+            color: var(--brand-gold-accent);
+        }
+
+        .service-title {
+            font-size: 1.4rem;
+            color: var(--brand-brown-dark);
+            margin-bottom: 15px;
+        }
+
+        .service-text {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 25px;
+            flex-grow: 1;
+        }
+
+        .service-features {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 25px;
+            border-top: 1px dashed var(--border-color);
+            padding-top: 20px;
+        }
+
+        .service-features li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.88rem;
+            color: var(--brand-brown-mid);
+            margin-bottom: 8px;
+        }
+
+        .service-features i {
+            color: var(--brand-gold-accent);
+            font-size: 0.8rem;
+        }
+
+        .service-link {
+            text-decoration: none;
+            color: var(--brand-brown-dark);
+            font-weight: 700;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition-smooth);
+        }
+
+        .service-link i {
+            transition: var(--transition-smooth);
+        }
+
+        .service-card:hover .service-link i {
+            transform: translateX(5px);
+        }
+
+        /* Interactive Feature / Benefit Banner */
+        .feature-banner {
+            padding: 80px 0;
+            background: linear-gradient(180deg, var(--bg-white) 0%, var(--bg-cream) 100%);
+        }
+
+        .banner-box {
+            background-color: var(--brand-brown-dark);
+            color: var(--bg-white);
+            border-radius: 24px;
+            padding: 50px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .banner-content h3 {
+            font-size: 2.2rem;
+            margin-bottom: 15px;
+            color: var(--bg-white);
+        }
+
+        .banner-content p {
+            color: var(--bg-cream-accent);
+            opacity: 0.9;
+            margin-bottom: 25px;
+        }
+
+        .banner-interactive {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 25px;
+            border-radius: 16px;
+            backdrop-filter: blur(5px);
+        }
+
+        .calc-slider {
+            margin-bottom: 20px;
+        }
+
+        .calc-slider label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            margin-bottom: 8px;
+            color: var(--bg-cream-accent);
+        }
+
+        .calc-slider input[type="range"] {
+            width: 100%;
+            accent-color: var(--brand-gold-accent);
+        }
+
+        .calc-result {
+            text-align: center;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .calc-result span {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--bg-cream-accent);
+            text-transform: uppercase;
+        }
+
+        .calc-result strong {
+            font-size: 2rem;
+            color: var(--brand-gold-accent);
+        }
+
+        /* Contact Section */
+        .contact {
+            padding: 100px 0;
+            background-color: var(--bg-cream);
+        }
+
+        .contact-wrapper {
+            display: grid;
+            grid-template-columns: 0.8fr 1.2fr;
+            gap: 50px;
+            background-color: var(--bg-white);
+            border-radius: 24px;
+            padding: 50px;
+            box-shadow: var(--shadow-subtle);
+            border: 1px solid var(--border-color);
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .contact-info-header h3 {
+            font-size: 2rem;
+            color: var(--brand-brown-dark);
+            margin-bottom: 15px;
+        }
+
+        .contact-info-header p {
+            color: var(--text-muted);
+            margin-bottom: 30px;
+        }
+
+        .info-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .info-icon {
+            width: 44px;
+            height: 44px;
+            background-color: var(--bg-cream-card);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--brand-brown-dark);
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .info-details h5 {
+            font-size: 0.95rem;
+            color: var(--brand-brown-dark);
+            margin-bottom: 3px;
+        }
+
+        .info-details p {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+        }
+
+        /* Form Styling */
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-group-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--brand-brown-dark);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 14px 16px;
+            background-color: var(--bg-cream);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            color: var(--text-dark);
+            transition: var(--transition-smooth);
+            outline: none;
+        }
+
+        .form-control:focus {
+            background-color: var(--bg-white);
+            border-color: var(--brand-brown-dark);
+            box-shadow: 0 0 0 3px rgba(74, 53, 40, 0.1);
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .form-status {
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .form-status.success {
+            display: block;
+            background-color: #E8F5E9;
+            color: #2E7D32;
+            border: 1px solid #C8E6C9;
+        }
+
+        /* Footer */
+        .footer {
+            background-color: var(--brand-brown-dark);
+            color: var(--bg-cream-accent);
+            padding: 70px 0 30px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1.5fr;
+            gap: 40px;
+            margin-bottom: 50px;
+        }
+
+        .footer-brand p {
+            color: var(--bg-cream-accent);
+            opacity: 0.7;
+            font-size: 0.9rem;
+            margin-top: 15px;
+            max-width: 300px;
+        }
+
+        .footer-column h4 {
+            color: var(--bg-white);
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
+            color: var(--bg-cream-accent);
+            opacity: 0.7;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: var(--transition-smooth);
+        }
+
+        .footer-links a:hover {
+            opacity: 1;
+            color: var(--brand-gold-accent);
+            padding-left: 5px;
+        }
+
+        .footer-bottom {
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            opacity: 0.6;
+        }
+
+        /* Modal Preview */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(31, 25, 21, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background-color: var(--bg-white);
+            width: 90%;
+            max-width: 600px;
+            border-radius: 20px;
+            padding: 35px;
+            position: relative;
+            box-shadow: var(--shadow-medium);
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal.show .modal-content {
+            transform: translateY(0);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 1.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-muted);
+        }
+
+        /* Responsive Breakpoints */
+        @media (max-width: 992px) {
+            .hero-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .hero-title {
+                font-size: 2.6rem;
+            }
+
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .banner-box {
+                grid-template-columns: 1fr;
+                padding: 35px;
+            }
+
+            .contact-wrapper {
+                grid-template-columns: 1fr;
+                padding: 35px;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hamburger {
+                display: block;
+            }
+
+            .nav-menu {
+                position: fixed;
+                top: 80px;
+                left: -100%;
+                width: 100%;
+                height: calc(100vh - 80px);
+                background-color: var(--bg-white);
+                flex-direction: column;
+                justify-content: flex-start;
+                padding-top: 40px;
+                gap: 25px;
+                transition: var(--transition-smooth);
+                box-shadow: var(--shadow-medium);
+            }
+
+            .nav-menu.active {
+                left: 0;
+            }
+
+            .hero {
+                padding-top: 130px;
+            }
+
+            .hero-title {
+                font-size: 2.2rem;
+            }
+
+            .form-group-row {
+                grid-template-columns: 1fr;
+            }
+
+            .badge-floating.top-right {
+                right: 0px;
+                top: -15px;
+            }
+
+            .badge-floating.bottom-left {
+                left: 0px;
+                bottom: -15px;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header / Nav -->
+    <header class="header" id="header">
+        <div class="container nav-container">
+            <a href="#" class="logo">
+                <div class="logo-icon"><i class="fa-solid fa-hotel"></i></div>
+                <div class="logo-text">GrandStay <span>RMS</span></div>
+            </a>
+
+            <button class="hamburger" id="hamburger" aria-label="Toggle Navigation">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+
+            <ul class="nav-menu" id="nav-menu">
+                <li><a href="#home" class="nav-link active">Beranda</a></li>
+                <li><a href="#services" class="nav-link">Layanan</a></li>
+                <li><a href="#calculator" class="nav-link">Simulasi</a></li>
+                <li><a href="#contact" class="nav-link">Kontak</a></li>
+                <li><button class="btn btn-primary btn-small" id="btn-demo-nav">Mulai Demo</button></li>
+            </ul>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="container hero-grid">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <i class="fa-solid fa-sparkles"></i> Sistem Informasi Reservasi Generasi Baru
+                </div>
+                <h1 class="hero-title">Tingkatkan Okupansi Hotel & <span>Efisiensi Reservasi</span> Anda</h1>
+                <p class="hero-subtitle">Solusi perangkat lunak manajemen reservasi terpadu untuk hotel independen, resor, dan boutique hotel. Kelola kamar, tingkatkan direct-booking, dan optimalkan pendapatan.</p>
+                <div class="hero-actions">
+                    <a href="#contact" class="btn btn-primary">
+                        Konsultasi Gratis <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                    <a href="#services" class="btn btn-secondary">
+                        Pelajari Layanan
+                    </a>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <h4>99.9%</h4>
+                        <p>Uptime Sistem</p>
+                    </div>
+                    <div class="stat-item">
+                        <h4>+45%</h4>
+                        <p>Direct Booking</p>
+                    </div>
+                    <div class="stat-item">
+                        <h4>120+</h4>
+                        <p>Hotel Bermitra</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hero-visual">
+                <div class="main-card">
+                    <div class="card-header-mock">
+                        <div class="dots">
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                        </div>
+                        <div class="mock-title">Sistem Dashboard Live</div>
+                    </div>
+                    <div class="booking-widget-demo">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                            <div>
+                                <small style="color:var(--text-muted); font-size:0.75rem;">Status Kamar Hari Ini</small>
+                                <h4 style="color:var(--brand-brown-dark); font-size:1.1rem;">Deluxe Ocean View</h4>
+                            </div>
+                            <span style="background:#E8F5E9; color:#2E7D32; font-size:0.75rem; padding:4px 10px; border-radius:20px; font-weight:600;">Terisi 88%</span>
+                        </div>
+                        <div class="demo-row">
+                            <div class="demo-input">
+                                <label>Check-in</label>
+                                <span>24 Okt 2026</span>
+                            </div>
+                            <div class="demo-input">
+                                <label>Check-out</label>
+                                <span>27 Okt 2026</span>
+                            </div>
+                        </div>
+                        <div class="demo-input" style="margin-bottom:15px;">
+                            <label>Tipe Pembayaran</label>
+                            <span>Instan / QRIS & Kredit</span>
+                        </div>
+                        <button class="btn btn-primary" style="width:100%; border-radius:10px; padding:10px;" id="btn-quick-preview">
+                            <i class="fa-solid fa-magnifying-glass"></i> Simulasi Reservasi
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Floating Badges -->
+                <div class="badge-floating top-right">
+                    <div class="badge-icon"><i class="fa-solid fa-bolt"></i></div>
+                    <div>
+                        <div style="font-size:0.75rem; opacity:0.8;">Sinkronisasi Realtime</div>
+                        <div style="font-size:0.9rem; font-weight:700;">Anti Double Booking</div>
+                    </div>
+                </div>
+
+                <div class="badge-floating bottom-left">
+                    <div class="badge-icon"><i class="fa-solid fa-shield-check"></i></div>
+                    <div>
+                        <div style="font-size:0.75rem; color:var(--text-muted);">Keamanan Data</div>
+                        <div style="font-size:0.9rem; font-weight:700; color:var(--brand-brown-dark);">Terenkripsi 256-bit</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section (3 Utama) -->
+    <section class="services" id="services">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Layanan Unggulan</span>
+                <h2 class="section-title">Solusi Sistem Reservasi Terpadu</h2>
+                <p class="section-description">Dirancang khusus untuk mempermudah operasional harian hotel Anda, meningkatkan pengalaman tamu, dan memaksimalkan pendapatan.</p>
+            </div>
+
+            <div class="services-grid">
+                <!-- Service 1 -->
+                <div class="service-card">
+                    <div class="service-icon-wrapper">
+                        <i class="fa-solid fa-bed"></i>
+                    </div>
+                    <h3 class="service-title">Manajemen Kamar & PMS</h3>
+                    <p class="service-text">Sistem Front Desk lengkap untuk mengelola status ketersediaan kamar, check-in/out cepat, house-keeping, serta riwayat reservasi tamu secara efisien.</p>
+                    <ul class="service-features">
+                        <li><i class="fa-solid fa-check"></i> Kalender Ketersediaan Real-Time</li>
+                        <li><i class="fa-solid fa-check"></i> Auto Check-in & Digital Key-card</li>
+                        <li><i class="fa-solid fa-check"></i> Manajemen Housekeeping Instant</li>
+                    </ul>
+                    <a href="#contact" class="service-link">
+                        Konsultasi Fitur Ini <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+
+                <!-- Service 2 -->
+                <div class="service-card">
+                    <div class="service-icon-wrapper">
+                        <i class="fa-solid fa-globe"></i>
+                    </div>
+                    <h3 class="service-title">Direct Booking Engine</h3>
+                    <p class="service-text">Mesin pemesanan langsung terintegrasi di website hotel Anda tanpa komisi pihak ketiga. Dilengkapi Payment Gateway lokal & internasional.</p>
+                    <ul class="service-features">
+                        <li><i class="fa-solid fa-check"></i> Bebas Komisi OTA</li>
+                        <li><i class="fa-solid fa-check"></i> Integrasi QRIS, VA & Kartu Kredit</li>
+                        <li><i class="fa-solid fa-check"></i> Mobile Friendly Booking Flow</li>
+                    </ul>
+                    <a href="#contact" class="service-link">
+                        Konsultasi Fitur Ini <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+
+                <!-- Service 3 -->
+                <div class="service-card">
+                    <div class="service-icon-wrapper">
+                        <i class="fa-solid fa-chart-line-up"></i>
+                    </div>
+                    <h3 class="service-title">Analitik & Revenue Management</h3>
+                    <p class="service-text">Laporan performa harian, proyeksi pendapatan, dan penetapan harga dinamis (Dynamic Pricing) pintar berbasis AI untuk okupansi maksimal.</p>
+                    <ul class="service-features">
+                        <li><i class="fa-solid fa-check"></i> Laporan RevPAR & ADR Otomatis</li>
+                        <li><i class="fa-solid fa-check"></i> Rekomendasi Harga Dinamis</li>
+                        <li><i class="fa-solid fa-check"></i> Ekspor Laporan Keuangan (PDF/XLS)</li>
+                    </ul>
+                    <a href="#contact" class="service-link">
+                        Konsultasi Fitur Ini <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Profit Banner -->
+    <section class="feature-banner" id="calculator">
+        <div class="container">
+            <div class="banner-box">
+                <div class="banner-content">
+                    <span class="section-tag" style="color:var(--brand-gold-accent);">Simulasi Efisiensi</span>
+                    <h3>Hitung Potensi Penghematan Komisi Hotel Anda</h3>
+                    <p>Beralih ke sistem Direct Booking Engine kami dan pangkas hingga 15-20% komisi dari Agen Perjalanan Online (OTA).</p>
+                    <a href="#contact" class="btn btn-primary" style="background-color:var(--brand-gold-accent); color:var(--brand-brown-dark);">
+                        Mulai Hemat Sekarang
+                    </a>
+                </div>
+
+                <div class="banner-interactive">
+                    <div class="calc-slider">
+                        <label>
+                            <span>Total Kamar Hotel:</span>
+                            <strong id="room-val" style="color:var(--brand-gold-accent);">30 Kamar</strong>
+                        </label>
+                        <input type="range" id="room-range" min="5" max="150" value="30">
+                    </div>
+
+                    <div class="calc-slider">
+                        <label>
+                            <span>Rata-rata Harga Kamar / Malam:</span>
+                            <strong id="price-val" style="color:var(--brand-gold-accent);">Rp 600.000</strong>
+                        </label>
+                        <input type="range" id="price-range" min="200000" max="2500000" step="50000" value="600000">
+                    </div>
+
+                    <div class="calc-result">
+                        <span>Estimasi Hemat Komisi OTA / Bulan:</span>
+                        <strong id="savings-result">Rp 16.200.000</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact" id="contact">
+        <div class="container">
+            <div class="contact-wrapper">
+                <div class="contact-info">
+                    <div class="contact-info-header">
+                        <span class="section-tag">Hubungi Kami</span>
+                        <h3>Siap Transformasi Digital Hotel Anda?</h3>
+                        <p>Dapatkan demo gratis atau konsultasikan kebutuhan operasional properti Anda bersama tim ahli kami.</p>
+                    </div>
+
+                    <div class="info-list">
+                        <div class="info-item">
+                            <div class="info-icon"><i class="fa-solid fa-location-dot"></i></div>
+                            <div class="info-details">
+                                <h5>Lokasi Kantor</h5>
+                                <p>Jl. Prasetya Utama No. 88, Jakarta Selatan, Indonesia</p>
+                            </div>
+                        </div>
+
+                        <div class="info-item">
+                            <div class="info-icon"><i class="fa-solid fa-envelope"></i></div>
+                            <div class="info-details">
+                                <h5>Email Resmi</h5>
+                                <p>info@grandstay-rms.co.id</p>
+                            </div>
+                        </div>
+
+                        <div class="info-item">
+                            <div class="info-icon"><i class="fa-solid fa-phone"></i></div>
+                            <div class="info-details">
+                                <h5>Telepon / WhatsApp</h5>
+                                <p>+62 (021) 555-8901 / +62 812-3456-7890</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="font-size: 0.85rem; color: var(--text-muted);">
+                        <i class="fa-solid fa-clock"></i> Jam Operasional: Senin - Jumat (08:00 - 17:00 WIB)
+                    </div>
+                </div>
+
+                <!-- Form -->
+                <div class="contact-form-container">
+                    <form class="contact-form" id="contact-form">
+                        <div class="form-group-row">
+                            <div class="form-group">
+                                <label for="nama">Nama Lengkap *</label>
+                                <input type="text" id="nama" class="form-control" placeholder="Contoh: Budi Santoso" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="hotel">Nama Hotel / Properti *</label>
+                                <input type="text" id="hotel" class="form-control" placeholder="Contoh: Grand Luxe Resort" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group-row">
+                            <div class="form-group">
+                                <label for="email">Email *</label>
+                                <input type="email" id="email" class="form-control" placeholder="nama@hotel.com" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="phone">Nomor Telepon / WhatsApp *</label>
+                                <input type="tel" id="phone" class="form-control" placeholder="08123456789" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="layanan">Layanan yang Diminati</label>
+                            <select id="layanan" class="form-control">
+                                <option value="pms">Manajemen Kamar & PMS</option>
+                                <option value="booking-engine">Direct Booking Engine</option>
+                                <option value="analytics">Analitik & Revenue Management</option>
+                                <option value="all">Paket Kompleks Full-Suite</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="pesan">Pesan / Pertanyaan Spesifik</label>
+                            <textarea id="pesan" class="form-control" placeholder="Tuliskan kebutuhan atau jumlah kamar hotel Anda..."></textarea>
+                        </div>
+
+                        <div class="form-status" id="form-status"></div>
+
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">
+                            Kirim Pertanyaan <i class="fa-solid fa-paper-plane"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="#" class="logo">
+                        <div class="logo-icon"><i class="fa-solid fa-hotel"></i></div>
+                        <div class="logo-text" style="color:var(--bg-white);">GrandStay <span style="color:var(--brand-gold-accent);">RMS</span></div>
+                    </a>
+                    <p>Penyedia solusi teknologi informasi reservasi & pengelolaan operasional hotel terpercaya di Indonesia.</p>
+                </div>
+
+                <div class="footer-column">
+                    <h4>Navigasi</h4>
+                    <ul class="footer-links">
+                        <li><a href="#home">Beranda</a></li>
+                        <li><a href="#services">Layanan</a></li>
+                        <li><a href="#calculator">Simulasi Hemat</a></li>
+                        <li><a href="#contact">Kontak</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column">
+                    <h4>Layanan</h4>
+                    <ul class="footer-links">
+                        <li><a href="#services">Hotel PMS</a></li>
+                        <li><a href="#services">Booking Engine</a></li>
+                        <li><a href="#services">Revenue Analytics</a></li>
+                        <li><a href="#services">Payment Gateway</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-column">
+                    <h4>Keamanan & Kepatuhan</h4>
+                    <p style="font-size:0.85rem; color:var(--bg-cream-accent); opacity:0.7; margin-bottom:15px;">Sistem kami tersertifikasi standar keamanan ISO 27001 dan mematuhi regulasi perlindungan data.</p>
+                    <div style="display:flex; gap:10px; font-size:1.4rem; color:var(--brand-gold-accent);">
+                        <i class="fa-brands fa-cc-visa"></i>
+                        <i class="fa-brands fa-cc-mastercard"></i>
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2026 GrandStay RMS. Hak Cipta Dilindungi.</p>
+                <p>Desain Modern, Minimalis & Responsif</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal Interactive Preview -->
+    <div class="modal" id="demo-modal">
+        <div class="modal-content">
+            <button class="close-modal" id="close-modal">&times;</button>
+            <div style="text-align:center; margin-bottom:20px;">
+                <div class="service-icon-wrapper" style="margin: 0 auto 15px auto;">
+                    <i class="fa-solid fa-laptop-code"></i>
+                </div>
+                <h3 class="font-serif" style="font-size:1.8rem; color:var(--brand-brown-dark);">Jadwalkan Live Demo</h3>
+                <p style="color:var(--text-muted); font-size:0.9rem;">Lihat bagaimana GrandStay RMS bekerja langsung dalam mengelola reservasi kamar hotel Anda.</p>
+            </div>
+            <div style="background:var(--bg-cream-card); padding:20px; border-radius:12px; margin-bottom:20px;">
+                <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+                    <i class="fa-solid fa-check-circle" style="color:var(--brand-gold-accent);"></i>
+                    <span style="font-size:0.9rem;">Sesi 1-on-1 bersama Software Specialist</span>
+                </div>
+                <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+                    <i class="fa-solid fa-check-circle" style="color:var(--brand-gold-accent);"></i>
+                    <span style="font-size:0.9rem;">Uji coba gratis (Free Trial 14 Hari)</span>
+                </div>
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <i class="fa-solid fa-check-circle" style="color:var(--brand-gold-accent);"></i>
+                    <span style="font-size:0.9rem;">Tanpa komitmen & konfirmasi instan</span>
+                </div>
+            </div>
+            <a href="#contact" class="btn btn-primary" id="btn-modal-go" style="width:100%;">
+                Isi Form Permintaan Demo
+            </a>
+        </div>
+    </div>
+
+    <!-- JavaScript Code (Murni tanpa Framework) -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 1. Mobile Navigation Menu Toggle
+            const hamburger = document.getElementById('hamburger');
+            const navMenu = document.getElementById('nav-menu');
+            const navLinks = document.querySelectorAll('.nav-link');
+
+            hamburger.addEventListener('click', function() {
+                navMenu.classList.toggle('active');
+                const icon = hamburger.querySelector('i');
+                if (navMenu.classList.contains('active')) {
+                    icon.classList.remove('fa-bars');
+                    icon.classList.add('fa-xmark');
+                } else {
+                    icon.classList.remove('fa-xmark');
+                    icon.classList.add('fa-bars');
+                }
+            });
+
+            // Close mobile menu when link clicked
+            navLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    navMenu.classList.remove('active');
+                    const icon = hamburger.querySelector('i');
+                    if (icon) {
+                        icon.classList.remove('fa-xmark');
+                        icon.classList.add('fa-bars');
+                    }
+                });
+            });
+
+            // 2. Header Scroll Background Change
+            const header = document.getElementById('header');
+            window.addEventListener('scroll', function() {
+                if (window.scrollY > 50) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            });
+
+            // 3. Calculator Logic (Simulasi Penghematan Komisi)
+            const roomRange = document.getElementById('room-range');
+            const priceRange = document.getElementById('price-range');
+            const roomVal = document.getElementById('room-val');
+            const priceVal = document.getElementById('price-val');
+            const savingsResult = document.getElementById('savings-result');
+
+            function formatRupiah(number) {
+                return new Intl.NumberFormat('id-ID', {
+                    style: 'currency',
+                    currency: 'IDR',
+                    maximumFractionDigits: 0
+                }).format(number);
+            }
+
+            function updateCalculator() {
+                const rooms = parseInt(roomRange.value);
+                const price = parseInt(priceRange.value);
+
+                roomVal.textContent = rooms + ' Kamar';
+                priceVal.textContent = formatRupiah(price);
+
+                // Asumsi: Okupansi 60%, Komisi OTA 15%, 30 hari
+                // Estimasi hemat 60% direct booking dari total terisi
+                const occupiedRoomsPerDay = rooms * 0.6;
+                const monthlyRevenue = occupiedRoomsPerDay * price * 30;
+                const potentialSavings = monthlyRevenue * 0.15; // 15% komisi OTA dihemat
+
+                savingsResult.textContent = formatRupiah(potentialSavings);
+            }
+
+            if (roomRange && priceRange) {
+                roomRange.addEventListener('input', updateCalculator);
+                priceRange.addEventListener('input', updateCalculator);
+                // Initial Run
+                updateCalculator();
+            }
+
+            // 4. Modal Interactions
+            const demoModal = document.getElementById('demo-modal');
+            const btnDemoNav = document.getElementById('btn-demo-nav');
+            const btnQuickPreview = document.getElementById('btn-quick-preview');
+            const closeModal = document.getElementById('close-modal');
+            const btnModalGo = document.getElementById('btn-modal-go');
+
+            function openModal() {
+                demoModal.classList.add('show');
+            }
+
+            function hideModal() {
+                demoModal.classList.remove('show');
+            }
+
+            if (btnDemoNav) btnDemoNav.addEventListener('click', openModal);
+            if (btnQuickPreview) btnQuickPreview.addEventListener('click', openModal);
+            if (closeModal) closeModal.addEventListener('click', hideModal);
+
+            if (btnModalGo) {
+                btnModalGo.addEventListener('click', function() {
+                    hideModal();
+                });
+            }
+
+            // Close modal when clicking outside box
+            window.addEventListener('click', function(e) {
+                if (e.target === demoModal) {
+                    hideModal();
+                }
+            });
+
+            // 5. Contact Form Submission Handling
+            const contactForm = document.getElementById('contact-form');
+            const formStatus = document.getElementById('form-status');
+
+            if (contactForm) {
+                contactForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+
+                    const nama = document.getElementById('nama').value;
+                    const hotel = document.getElementById('hotel').value;
+
+                    // Show success feedback
+                    formStatus.className = 'form-status success';
+                    formStatus.innerHTML = `<i class="fa-solid fa-circle-check"></i> Terima kasih <strong>${nama}</strong> dari <strong>${hotel}</strong>. Pesan Anda telah kami terima! Tim spesialis kami akan menghubungi Anda dalam kurun waktu 1x24 jam.`;
+
+                    // Reset form
+                    contactForm.reset();
+
+                    // Auto scroll to message
+                    formStatus.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                });
+            }
+
+            // 6. Smooth Active Nav Link Update on Scroll
+            const sections = document.querySelectorAll('section');
+            window.addEventListener('scroll', function() {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.clientHeight;
+                    if (pageYOffset >= (sectionTop - 150)) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === `#${current}`) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
